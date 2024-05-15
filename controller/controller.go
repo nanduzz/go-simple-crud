@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	findall "github.com/nanduzz/go-simple-crud/use_case/Find_all"
 	createuser "github.com/nanduzz/go-simple-crud/use_case/create_user"
+	findall "github.com/nanduzz/go-simple-crud/use_case/find_all"
 	finduser "github.com/nanduzz/go-simple-crud/use_case/find_user"
 	"github.com/nanduzz/go-simple-crud/util"
 )
@@ -46,7 +46,7 @@ func CreateUserHandler(c *gin.Context) {
 
 	util.InfoLog.Printf("creating user with username: %s\n", input.Username)
 	c.Header("Location", "/users/"+output.ID)
-	c.JSON(201, output)
+	c.JSON(http.StatusCreated, output)
 }
 
 func FindAll(c *gin.Context) {
@@ -54,7 +54,7 @@ func FindAll(c *gin.Context) {
 	users, err := findall.Execute(findAllUsersFn)
 	if err != nil {
 		// log error
-		util.WarnrLog.Printf("Encountered error in main: %+v", err)
+		util.WarnrLog.Printf("Encountered error: %+v", err)
 
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Unexpected error while fetching users, try again later",
@@ -62,7 +62,7 @@ func FindAll(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, users)
+	c.JSON(http.StatusOK, users)
 
 }
 
@@ -92,6 +92,6 @@ func FindUserHandlerById(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, user)
+	c.JSON(http.StatusOK, user)
 
 }
