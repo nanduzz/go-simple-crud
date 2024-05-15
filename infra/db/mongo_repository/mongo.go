@@ -11,7 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var mongoClient *mongo.Client
 var MongoDatababse *mongo.Database
 
 // functions for testing
@@ -28,7 +27,7 @@ func initMongoClient() {
 	if uri == "" {
 		log.Fatal("MONGODB_URI is not set")
 	}
-	var creentials = options.Credential{
+	credentials := options.Credential{
 		AuthSource: os.Getenv("MONGODB_AUTH_SOURCE"),
 		Username:   os.Getenv("MONGODB_USER"),
 		Password:   os.Getenv("MONGODB_PASS"),
@@ -39,9 +38,8 @@ func initMongoClient() {
 			log.Print(evt.Command)
 		},
 	}
-	var clientOptionso = options.Client().ApplyURI(uri).SetAuth(creentials).SetMonitor(cmdMonitor)
-	var err error
-	mongoClient, err = mongo.Connect(context.TODO(), clientOptionso)
+	clientOptionso := options.Client().ApplyURI(uri).SetAuth(credentials).SetMonitor(cmdMonitor)
+	mongoClient, err := mongo.Connect(context.TODO(), clientOptionso)
 	if err != nil {
 		log.Fatal(err)
 	}
